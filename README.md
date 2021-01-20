@@ -84,7 +84,7 @@ In this example, Item A1 should discounted at 20% off, and Item A2 should discou
 
 ## User Stories
 
-``` 
+```
 Merchant Bulk Discounts Index
 
 As a merchant
@@ -97,7 +97,7 @@ percentage discount and quantity thresholds
 And each bulk discount listed includes a link to its show page
 ```
 
-``` 
+```
 Merchant Bulk Discount Create
 
 As a merchant
@@ -137,7 +137,7 @@ When I visit my bulk discount show page
 Then I see a link to edit the bulk discount
 When I click this link
 Then I am taken to a new page with a form to edit the discount
-And I see that the discounts current attributes are prepoluated in the form
+And I see that the discounts current attributes are prepopluated in the form
 When I change any/all of the information and click submit
 Then I am redirected to the bulk discount's show page
 And I see that the discount's attributes have been updated

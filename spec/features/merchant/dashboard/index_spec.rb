@@ -60,6 +60,14 @@ RSpec.describe 'merchant dashboard' do
     expect(current_path).to eq("/merchant/#{@merchant1.id}/invoices")
   end
 
+  it 'can see a link to my bulk discounts index' do
+    expect(page).to have_link("Discounts")
+
+    click_link "Discounts"
+
+    expect(current_path).to eq("/merchant/#{@merchant1.id}/bulk_discounts")
+  end
+
   it 'shows the names of the top 5 customers with successful transactions' do
     within("#customer-#{@customer_1.id}") do
       expect(page).to have_content(@customer_1.first_name)
@@ -91,7 +99,7 @@ RSpec.describe 'merchant dashboard' do
   end
   it "can see a section for Items Ready to Ship with list of names of items ordered and ids" do
     within("#items_ready_to_ship") do
-      
+
       expect(page).to have_content(@item_1.name)
       expect(page).to have_content(@item_1.invoice_ids)
 

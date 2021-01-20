@@ -2,9 +2,10 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <p class="navbar-text"><%= @merchant.name %></p>
     <ul class="nav navbar-nav">
-      <li><%= link_to 'Dashboard', merchant_dashboard_index_path, style: 'pull-right' %>
-      <%= link_to 'My Items', merchant_items_path(@merchant), style: 'pull-right' %>
-      <%= link_to 'My Invoices', merchant_invoices_path(@merchant), style: 'pull-right' %></li>
+      <li><%= link_to 'Dashboard', merchant_dashboard_index_path, class: 'link_1', style: 'pull-right' %>
+      <li><%= link_to 'Items', merchant_items_path, class: 'link_1', style: 'pull-right' %>
+      <li><%= link_to 'Invoices', merchant_invoices_path, class: 'link_1', style: 'pull-right' %>
+      <li><%= link_to 'Discounts', merchant_bulk_discounts_path, class: 'link_1', style: 'pull-right' %></li>
     </ul>
   </nav>
 </div>
@@ -18,7 +19,8 @@
   <br>
 
   <p> Created on: <%= @invoice.created_at.strftime("%A, %B %-d, %Y") %></p>
-  <p>Total Revenue: <%= @invoice.total_revenue %></p>
+  <p>Total Revenue: <%= number_to_currency(@invoice.total_revenue) %><br>
+  Total Revenue after Discounts applied: <%= number_to_currency(@invoice.discount_revenue.round(2)) %></p>
 
 
   <h4>Customer:</h4>
@@ -33,6 +35,7 @@
         <th class="th1">Quantity</th>
         <th class="th1">Unit Price</th>
         <th class="th1">Status</th>
+        <th class="th1">Discounts Applied</th>
       </tr>
     </thead>
 
@@ -46,11 +49,14 @@
             <td style="text-align:center"><%= form_with model: @invoice, url: merchant_invoice_path(@merchant, @invoice), method: :patch do |f| %>
                                             <%= f.select :status, Invoice.statuses.keys, selected: "#{@invoice.status}" %>
                                             <%= f.submit 'Update Invoice' %>
-                                          <% end %></td><br/>
+                                          <% end %></td>
+            <td style="text-align:center">
+              <% if !i.applied_bulk_discount.nil? %>
+                <%= link_to "#{i.find_invoice_item_applied_discounts_id}", merchant_bulk_discount_path(@merchant, i.applied_bulk_discount) %><br/>
+              <% end %>
           </tr>
         </section>
       <% end %>
     </tbody>
   </table>
-
 </body>

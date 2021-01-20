@@ -12,14 +12,17 @@
 
 <body>
   <div class="row">
-    <p class='col-12'><%= @item.name %></p>
+    <p class='mr-auto col-sm-5'>My Discounts</p>
   </div>
 
+  <p><%= link_to "Create New Discount", new_merchant_bulk_discount_path(@merchant) %></p>
 
-  <p><%= @item.description %></p><br/>
-
-  <p>Price: <%= number_to_currency(@item.unit_price) %></p>
-
-  <strong><%= link_to "Update Item", edit_merchant_item_path(@merchant, @item) %></strong>
+  <ul class='mr-auto col-sm-4'>
+    <% @merchant.bulk_discounts.each do |discount| %>
+      <section id="discount-<%= discount.id %>">
+          <li class='discount'><%= link_to "#{discount.percent_discount}% off on purchases of #{discount.quantity_threshold} items or more!", merchant_bulk_discount_path(@merchant, discount) %> <%= link_to "Delete Discount", merchant_bulk_discount_path(@merchant, discount), method: :delete %></li>
+      </section>
+    <% end %>
+  </ul>
 
 </body>

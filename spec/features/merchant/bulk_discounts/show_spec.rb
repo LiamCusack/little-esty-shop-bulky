@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'merchant invoices show' do
+RSpec.describe 'merchant bulk discount show' do
   before :each do
     @merchant1 = Merchant.create!(name: 'Hair Care')
     @merchant2 = Merchant.create!(name: 'Jewelry')
@@ -56,71 +56,21 @@ RSpec.describe 'merchant invoices show' do
 
     @bkd1 = BulkDiscount.create!(merchant_id: @merchant1.id, percent_discount: 10.0, quantity_threshold: 10)
     @bkd2 = BulkDiscount.create!(merchant_id: @merchant1.id, percent_discount: 5.0, quantity_threshold: 5)
-    @bkd3 = BulkDiscount.create!(merchant_id: @merchant2.id, percent_discount: 10.0, quantity_threshold: 5)
+    @bkd3 = BulkDiscount.create!(merchant_id: @merchant2.id, percent_discount: 30.0, quantity_threshold: 4)
 
+    visit "/merchant/#{@merchant1.id}/bulk_discounts/#{@bkd1.id}"
   end
 
-  it "shows the invoice information" do
-    visit merchant_invoice_path(@merchant1, @invoice_1)
-
-    expect(page).to have_content(@invoice_1.id)
-    expect(page).to have_content(@invoice_1.status)
-    expect(page).to have_content(@invoice_1.created_at.strftime("%A, %B %-d, %Y"))
+  it "displays the bulk discounts quantity and percent off" do
+    expect(page).to have_content(@bkd1.percent_discount)
+    expect(page).to have_content(@bkd1.quantity_threshold)
   end
 
-  it "shows the customer information" do
-    visit merchant_invoice_path(@merchant1, @invoice_1)
+  it "displays a working link to edit the discount" do
+    expect(page).to have_link("Edit this Discount")
 
-    expect(page).to have_content(@customer_1.first_name)
-    expect(page).to have_content(@customer_1.last_name)
-    expect(page).to_not have_content(@customer_2.last_name)
-  end
+    click_link "Edit this Discount"
 
-  it "shows the item information" do
-    visit merchant_invoice_path(@merchant1, @invoice_1)
-
-    expect(page).to have_content(@item_1.name)
-    expect(page).to have_content(@ii_1.quantity)
-    expect(page).to have_content(@ii_1.unit_price)
-    expect(page).to have_content(@ii_1.find_invoice_item_applied_discounts_id)
-    expect(page).to_not have_content(@ii_4.unit_price)
-  end
-
-  it "item applied discount is working link to bulk discount show page" do
-    visit merchant_invoice_path(@merchant1, @invoice_1)
-
-    expect(page).to have_link("#{@ii_1.find_invoice_item_applied_discounts_id}")
-
-    click_link("#{@ii_1.find_invoice_item_applied_discounts_id}")
-    expect(current_path).to eq(merchant_bulk_discount_path(@merchant1, @bkd2))
-  end
-
-  it "shows the total revenue for this invoice" do
-    visit merchant_invoice_path(@merchant1, @invoice_1)
-
-    expect(page).to have_content(@invoice_1.total_revenue)
-  end
-
-  it "shows the total revenue for this invoice after applying discounts" do
-    visit merchant_invoice_path(@merchant1, @invoice_1)
-
-    expect(page).to have_content(@invoice_1.discount_revenue)
-  end
-
-  it "shows a select field to update the invoice status" do
-    visit merchant_invoice_path(@merchant1, @invoice_1)
-
-    within("#the-status-#{@ii_1.id}") do
-      page.select("cancelled")
-      click_button "Update Invoice"
-      expect(page).to have_content("cancelled")
-      expect(page).to_not have_content("in progress")
-     end
-  end
-
-  it "doesn't apply discounts to item's from other merchants even if they meet the quantity threshold" do
-    visit merchant_invoice_path(@merchant1, @invoice_1)
-
-    expect(@invoice_1.discount_revenue).to eq(240.30)
+    expect(current_path).to eq("/merchant/#{@merchant1.id}/bulk_discounts/#{@bkd1.id}/edit")
   end
 end

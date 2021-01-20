@@ -10,4 +10,16 @@
   </nav>
 </div>
 
-<%= render partial: 'form', locals: { method: :post, url: merchant_items_path(@merchant, @item), class: 'merchant_item_form', local: true, model: nil } %>
+<body>
+  <div class="row">
+    <p class='mr-auto col-sm-5'>Discount #<%= @bulk_discount.id %></p>
+  </div>
+
+  <p><%= link_to "Edit this Discount", edit_merchant_bulk_discount_path(@merchant) %></p>
+
+  <h3 class='mr-auto col-sm-4'>
+    Percent Discount: <%= @bulk_discount.percent_discount %>%<br><br>
+    Only applicable when purchasing a quantity of <%= @bulk_discount.quantity_threshold %> or more items of the same type from <%= @merchant.name %>
+  </h3>
+
+</body>
